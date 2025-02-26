@@ -1,0 +1,6 @@
+name: toggle-readonly
+functions:
+    toggleReadOnly:
+        path: toggle-readonly.ts:toggleReadOnly
+        command:
+            name: 'Editor: Toggle Read-Only Mode'
