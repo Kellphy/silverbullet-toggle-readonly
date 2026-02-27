@@ -16,15 +16,3 @@ export async function toggleReadOnly() {
     }
   }, 50);
 }
-
-export async function enableReadOnlyOnLoad() {
-  const isClient = await system.getEnv() === "client";
-
-  await editor.setUiOption("forcedROMode", true);
-
-  setTimeout(async () => {
-    if (isClient) {
-      await editor.rebuildEditorState();
-    }
-  }, 50);
-}

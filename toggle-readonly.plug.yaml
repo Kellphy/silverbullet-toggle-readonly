@@ -4,7 +4,3 @@ functions:
         path: toggle-readonly.ts:toggleReadOnly
         command:
             name: 'Editor: Toggle Read-Only Mode'
-    enableReadOnlyOnLoad:
-        path: toggle-readonly.ts:enableReadOnlyOnLoad
-        events:
-            - editor:init
