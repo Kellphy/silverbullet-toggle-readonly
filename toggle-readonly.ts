@@ -1,4 +1,4 @@
-import { editor } from "@silverbulletmd/silverbullet/syscalls";
+import { clientStore, editor } from "@silverbulletmd/silverbullet/syscalls";
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -27,5 +27,7 @@ export async function toggleReadOnly() {
 }
 
 export async function enableReadOnlyOnInit() {
+  // Clean up old persisted state from previous versions
+  await clientStore.del("toggleReadOnlyMode");
   await editor.setUiOption("forcedROMode", true);
 }
