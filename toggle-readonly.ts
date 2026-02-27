@@ -1,4 +1,9 @@
-import { editor } from "@silverbulletmd/silverbullet/syscalls";
+import { editor, system } from "@silverbulletmd/silverbullet/syscalls";
+
+const CONFIG_KEY = "toggleReadonly";
+const DEFAULT_CONFIG = {
+  defaultMode: "readonly",
+};
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -12,6 +17,11 @@ async function waitForUiOption(key: string, expected: boolean) {
       return;
     }
   }
+}
+
+async function getDefaultReadOnly(): Promise<boolean> {
+  const config = await system.getSpaceConfig(CONFIG_KEY, DEFAULT_CONFIG);
+  return config.defaultMode === "readonly";
 }
 
 export async function toggleReadOnly() {
@@ -29,16 +39,20 @@ export async function toggleReadOnly() {
 
 // Fires on plugs:loaded (before editor state is created)
 export async function enableReadOnlyEarly() {
-  await editor.setUiOption("forcedROMode", true);
+  const shouldBeReadOnly = await getDefaultReadOnly();
+  if (shouldBeReadOnly) {
+    await editor.setUiOption("forcedROMode", true);
+  }
 }
 
 // Fires on editor:init (after editor state is created)
-// Ensures read-only even if the early call was overridden
+// Ensures the configured default is applied even if the early call was overridden
 export async function enableReadOnlyOnInit() {
+  const shouldBeReadOnly = await getDefaultReadOnly();
   const current = await editor.getUiOption("forcedROMode");
-  if (current !== true) {
-    await editor.setUiOption("forcedROMode", true);
-    await waitForUiOption("forcedROMode", true);
+  if (current !== shouldBeReadOnly) {
+    await editor.setUiOption("forcedROMode", shouldBeReadOnly);
+    await waitForUiOption("forcedROMode", shouldBeReadOnly);
     await editor.rebuildEditorState();
   }
 }
