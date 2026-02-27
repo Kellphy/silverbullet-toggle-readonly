@@ -1,9 +1,7 @@
 import { editor, system } from "@silverbulletmd/silverbullet/syscalls";
 
 const CONFIG_KEY = "toggleReadonly";
-const DEFAULT_CONFIG = {
-  defaultMode: "readonly",
-};
+const DEFAULT_READONLY = true;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -20,8 +18,7 @@ async function waitForUiOption(key: string, expected: boolean) {
 }
 
 async function getDefaultReadOnly(): Promise<boolean> {
-  const config = await system.getSpaceConfig(CONFIG_KEY, DEFAULT_CONFIG);
-  return config.defaultMode === "readonly";
+  return await system.getSpaceConfig(CONFIG_KEY, DEFAULT_READONLY);
 }
 
 export async function toggleReadOnly() {
