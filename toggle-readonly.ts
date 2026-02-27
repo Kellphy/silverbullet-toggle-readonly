@@ -2,7 +2,6 @@ import { editor, system } from "@silverbulletmd/silverbullet/syscalls";
 
 export async function toggleReadOnly() {
   const forcedROMode = await editor.getUiOption("forcedROMode");
-  const isClient = await system.getEnv() === "client";
 
   editor.flashNotification(
     `Switching to ${forcedROMode ? "Edit" : "Read-Only"} Mode`,
@@ -10,9 +9,9 @@ export async function toggleReadOnly() {
 
   await editor.setUiOption("forcedROMode", !forcedROMode);
 
-  if (isClient) {
-    await editor.reloadPage();
-  }
+  setTimeout(async () => {
+    await editor.rebuildEditorState();
+  });
 }
 
 export async function enableReadOnlyOnInit() {
