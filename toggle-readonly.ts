@@ -34,16 +34,7 @@ export async function toggleReadOnly() {
   );
 }
 
-// Fires on plugs:loaded (before editor state is created)
-export async function enableReadOnlyEarly() {
-  const shouldBeReadOnly = await getDefaultReadOnly();
-  if (shouldBeReadOnly) {
-    await editor.setUiOption("forcedROMode", true);
-  }
-}
-
 // Fires on editor:init (after editor state is created)
-// Ensures the configured default is applied even if the early call was overridden
 export async function enableReadOnlyOnInit() {
   const shouldBeReadOnly = await getDefaultReadOnly();
   const current = await editor.getUiOption("forcedROMode");
