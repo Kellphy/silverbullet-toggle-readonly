@@ -10,9 +10,11 @@ export async function toggleReadOnly() {
 
   await editor.setUiOption("forcedROMode", !forcedROMode);
 
-  if (isClient) {
-    await editor.reloadPage();
-  }
+  setTimeout(async () => {
+    if (isClient) {
+      await editor.rebuildEditorState();
+    }
+  }, 50);
 }
 
 export async function enableReadOnlyOnInit() {
