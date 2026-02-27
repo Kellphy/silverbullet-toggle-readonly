@@ -7,4 +7,4 @@ functions:
     enableReadOnlyOnInit:
         path: toggle-readonly.ts:enableReadOnlyOnInit
         events:
-            - editor:init
+            - plugs:loaded
