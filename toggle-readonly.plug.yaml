@@ -4,7 +4,11 @@ functions:
         path: toggle-readonly.ts:toggleReadOnly
         command:
             name: 'Editor: Toggle Read-Only Mode'
+    enableReadOnlyEarly:
+        path: toggle-readonly.ts:enableReadOnlyEarly
+        events:
+            - plugs:loaded
     enableReadOnlyOnInit:
         path: toggle-readonly.ts:enableReadOnlyOnInit
         events:
-            - plugs:loaded
+            - editor:init

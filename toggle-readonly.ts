@@ -1,7 +1,17 @@
-import { clientStore, editor } from "@silverbulletmd/silverbullet/syscalls";
+import { editor } from "@silverbulletmd/silverbullet/syscalls";
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function waitForUiOption(key: string, expected: boolean) {
+  for (let i = 0; i < 20; i++) {
+    await sleep(50);
+    const current = await editor.getUiOption(key);
+    if (current === expected) {
+      return;
+    }
+  }
 }
 
 export async function toggleReadOnly() {
@@ -9,16 +19,7 @@ export async function toggleReadOnly() {
   const newMode = !forcedROMode;
 
   await editor.setUiOption("forcedROMode", newMode);
-
-  // Wait for Preact to re-render and update viewState
-  for (let i = 0; i < 20; i++) {
-    await sleep(50);
-    const currentValue = await editor.getUiOption("forcedROMode");
-    if (currentValue === newMode) {
-      break;
-    }
-  }
-
+  await waitForUiOption("forcedROMode", newMode);
   await editor.rebuildEditorState();
 
   editor.flashNotification(
@@ -26,8 +27,18 @@ export async function toggleReadOnly() {
   );
 }
 
-export async function enableReadOnlyOnInit() {
-  // Clean up old persisted state from previous versions
-  await clientStore.del("toggleReadOnlyMode");
+// Fires on plugs:loaded (before editor state is created)
+export async function enableReadOnlyEarly() {
   await editor.setUiOption("forcedROMode", true);
+}
+
+// Fires on editor:init (after editor state is created)
+// Ensures read-only even if the early call was overridden
+export async function enableReadOnlyOnInit() {
+  const current = await editor.getUiOption("forcedROMode");
+  if (current !== true) {
+    await editor.setUiOption("forcedROMode", true);
+    await waitForUiOption("forcedROMode", true);
+    await editor.rebuildEditorState();
+  }
 }
