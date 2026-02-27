@@ -1,9 +1,4 @@
-import {
-  clientStore,
-  editor,
-} from "@silverbulletmd/silverbullet/syscalls";
-
-const STORE_KEY = "toggleReadOnlyMode";
+import { editor } from "@silverbulletmd/silverbullet/syscalls";
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -13,7 +8,6 @@ export async function toggleReadOnly() {
   const forcedROMode = await editor.getUiOption("forcedROMode");
   const newMode = !forcedROMode;
 
-  await clientStore.set(STORE_KEY, newMode);
   await editor.setUiOption("forcedROMode", newMode);
 
   // Wait for Preact to re-render and update viewState
@@ -33,10 +27,5 @@ export async function toggleReadOnly() {
 }
 
 export async function enableReadOnlyOnInit() {
-  const savedMode = await clientStore.get(STORE_KEY);
-  const shouldBeReadOnly = savedMode !== null && savedMode !== undefined
-    ? savedMode
-    : true;
-
-  await editor.setUiOption("forcedROMode", shouldBeReadOnly);
+  await editor.setUiOption("forcedROMode", true);
 }
