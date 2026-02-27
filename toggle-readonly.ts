@@ -14,7 +14,7 @@ export async function toggleReadOnly() {
     if (isClient) {
       await editor.rebuildEditorState();
     }
-  }, 200);
+  });
 }
 
 export async function enableReadOnlyOnInit() {
