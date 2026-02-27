@@ -1,7 +1,6 @@
 {
   "tasks": {
-    "build": "silverbullet plug:compile -c deno.jsonc toggle-readonly.plug.yaml",
-    "watch": "silverbullet plug:compile -c deno.jsonc toggle-readonly.plug.yaml -w"
+"build": "deno run -A https://github.com/silverbulletmd/silverbullet/releases/download/edge/plug-compile.js -c deno.jsonc toggle-readonly.plug.yaml"
   },
   "lint": {
     "rules": {
