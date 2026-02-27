@@ -16,3 +16,7 @@ export async function toggleReadOnly() {
     }
   }, 50);
 }
+
+export async function enableReadOnlyOnInit() {
+  await editor.setUiOption("forcedROMode", true);
+}
